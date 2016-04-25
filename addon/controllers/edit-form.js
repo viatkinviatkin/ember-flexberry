@@ -209,6 +209,22 @@ export default Ember.Controller.extend(Ember.Evented, FlexberryLookupMixin, Erro
 
     if (attr.kind === 'belongsTo') {
       cellComponent.componentName = 'flexberry-lookup';
+      var projectionString = null;
+             var prosections = this.store.modelFor(attr.modelName).projections;
+             for (var prop in prosections){
+                if (prosections.hasOwnProperty(prop)) {
+                  if (prop.charAt(prop.length-1) === 'E') {
+                      projectionString = prop;
+                  }
+                }
+             }
+      cellComponent.componentProperties = {
+        choose: 'showLookupDialog',
+        remove: 'removeLookupValue',
+        relationName: bindingPath.slice(0, -3),
+        projection: projectionString,
+        title: attr.caption
+      };
       return cellComponent;
     }
 
