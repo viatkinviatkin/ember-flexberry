@@ -15,15 +15,11 @@ module.exports = {
           { name: 'ember-link-action', target: '0.0.34' },
           { name: 'broccoli-jscs', target: '1.2.2' },
           { name: 'ember-browserify', target: '1.1.9' },
+          'https://github.com/Flexberry/ember-flexberry-data.git#feature-fix-dependencies',
           'https://github.com/Flexberry/ember-localforage-adapter.git'
         ]
       });
-      }).then(function () {
-        return _this.addPackagesToProject([
-          { name: 'dexie', target: '1.3.6' },
-          'https://github.com/Flexberry/ember-flexberry-data.git#feature-fix-dependencies'
-        ]);
-      });
+    });
   },
 
   normalizeEntityName: function() {}
