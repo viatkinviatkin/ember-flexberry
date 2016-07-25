@@ -20,7 +20,8 @@ module.exports = {
       });
       }).then(function () {
         return _this.addPackagesToProject([
-          { name: 'dexie', target: '1.3.6' }
+          { name: 'dexie', target: '1.3.6' },
+          'https://github.com/Flexberry/ember-flexberry-data.git#feature-fix-dependencies'
         ]);
       });
   },
