@@ -71,7 +71,11 @@ module.exports = {
       formName: listFormBlueprint.listForm.name,// for use in files\__root__\controllers\__name__.js
       modelName: listFormBlueprint.listForm.projections[0].modelName,// for use in files\__root__\templates\__name__.hbs, files\__root__\routes\__name__.js
       modelProjection: listFormBlueprint.listForm.projections[0].modelProjection,// for use in files\__root__\routes\__name__.js
-      caption: listFormBlueprint.listForm.caption// for use in files\__root__\templates\__name__.hbs
+      caption: listFormBlueprint.listForm.caption,// for use in files\__root__\templates\__name__.hbs
+      importFormRouteName: listFormBlueprint.importFormRoute.name,
+      importFormRoutePath: listFormBlueprint.importFormRoute.path,
+      importFormControllerName: listFormBlueprint.importFormController.name,
+      importFormControllerPath: listFormBlueprint.importFormController.path,
       },
       listFormBlueprint.locales.getLodashVariablesProperties()// for use in files\__root__\locales\**\forms\__name__.js
    );
@@ -81,6 +85,8 @@ module.exports = {
 class ListFormBlueprint {
   locales: Locales;
   listForm: metadata.ListForm;
+  importFormRoute: any;
+  importFormController: any;
 
   constructor(blueprint, options) {
     let listFormsDir = path.join(options.metadataDir, "list-forms");
@@ -93,6 +99,26 @@ class ListFormBlueprint {
     let content = stripBom(fs.readFileSync(listFormFile, "utf8"));
     this.listForm = JSON.parse(content);
     this.locales.setupForm(this.listForm);
+
+    var configsFile = path.join('vendor/flexberry/custom-generator-options/generator-options.json');
+    if (fs.existsSync(configsFile)) {
+        var configs = JSON.parse(stripBom(fs.readFileSync(configsFile, "utf8")));
+        if (configs.listForms == undefined) {
+            this.importFormRoute.name = 'ListFormRoute';
+            this.importFormRoute.path = 'ember-flexberry/routes/list-form';
+            this.importFormController.name = 'ListFormController';
+            this.importFormController.path = 'ember-flexberry/controllers/list-form';
+        } else {
+            if (configs.listForms[options.entity.name] != undefined) {
+                this.importFormRoute = configs.listForms[options.entity.name].baseRoute;
+                this.importFormController = configs.listForms[options.entity.name].baseController;
+            }
+            else if (configs.listForms.defaultForm != undefined) {
+                this.importFormRoute = configs.listForms.defaultForm.baseRoute;
+                this.importFormController = configs.listForms.defaultForm.baseController;
+            };
+        };
+    };
   }
 
   private getLocalePathTemplate(options, isDummy, localePathSuffix: string): lodash.TemplateExecutor {
